@@ -1,0 +1,9 @@
+MONGODB_HOST: mongodb.cloudquestdev.com
+REDIS_HOST: redis.cloudquestdev.com
+CATALOGUE_HOST: catalogue.cloudquestdev.com
+CART_HOST: cart.cloudquestdev.com
+MYSQL_HOST: mysql.cloudquestdev.com
+USER_HOST: user.cloudquestdev.com
+RABBITMQ_HOST: rabbitmq.cloudquestdev.com
+SHIPPING_HOST: shipping.cloudquestdev.com
+PAYMENT_HOST: payment.cloudquestdev.com

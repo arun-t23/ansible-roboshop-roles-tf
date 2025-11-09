@@ -1,0 +1,18 @@
+
+- name: user creation, directory, code download etc
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: app-setup.yaml
+
+- name: nodejs install
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: nodejs.yaml
+
+- name: system setup restart and daemon reload
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: system-setup.yaml
+
+
+

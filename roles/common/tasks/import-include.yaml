@@ -1,0 +1,6 @@
+- name: print the import and export details
+  ansible.builtin.debug:
+    msg: " hi "
+- name: print the import and export details
+ansible.builtin.debug:
+    msg: " hi "

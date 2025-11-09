@@ -1,0 +1,73 @@
+#### creating the ec2 instnce and updatin the route 53 DNS records
+
+
+- name: creatin the ec2 instance and r53
+  hosts: local
+  connection: local
+  vars:
+    ami_id: ami-09c813fb71547fc4f
+    security_group_id: sg-0e26bb3210120668f
+    zone_id: "us-east-1"
+    domain_name: cloudquestdev.com
+    # instances: ## we can pass instance creation through command line using -e
+    # - mongodb
+    # - redis
+    # - mysql
+    # - rabbitmq
+    # - catalogue
+    # - user
+    # - shipping
+    # - cart
+    # - payment
+    # - frontend
+
+  tasks:
+  - name: create ec2 instance
+    amazon.aws.ec2_instance:
+      name: "{{ item }}"
+      instance_type: t3.micro
+      security_group: "{{ security_group_id }}"
+      image_id: "{{ ami_id }}"
+      tags:
+        name: "{{ item }}"
+      
+    loop: "{{ instances }}"
+    register: ec2_output
+  
+  # - name: print the ec2_output
+  #   ansible.builtin.debug:
+  #     msg: "{{ ec2_output }}"
+  
+  # - name: print the public ip
+  #   ansible.builtin.debug:
+  #     msg: "{{ item.instances[0].public_ip_address }}"
+  #   loop: "{{ ec2_output.results }}"
+
+  # - name: print the private ip
+  #   ansible.builtin.debug:
+  #     msg: "{{ item.instances[0].private_ip_address }}"
+  #   loop: "{{ ec2_output.results }}"
+
+
+  - name: create route53 records
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      record: "{{ item.item }}.{{ domain_name }}" ### what happens here is the loop ec2.output results will be given to the item, next item is the keyword in the logs details will be checked finds out the ec2instance name in this case "mongodb", then attaches it with our domain name: mongodb.cloudquest.com
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].private_ip_address }}"
+      overwrite: true
+    loop: "{{ ec2_output.results }}"
+
+  - name: create route53 record
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      record: "{{ domain_name }}"
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].public_ip_address }}"
+      overwrite: true
+    when: item.item == "frontend"
+    loop: "{{ ec2_output.results }}"
