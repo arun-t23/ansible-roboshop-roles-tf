@@ -1,1 +1,1 @@
-MONGODB_HOST: mongodb.cloudquestdev.com
+MONGODB_HOST: mongodb-{{ env }}.cloudquestdev.com
